@@ -1,0 +1,23 @@
+div(ng-controller='DoctorAdder')
+    form.form-horizontal(ng-submit="submit()", style="width: 420px; margin:auto;")
+        h3.text-center Ajouter un médecin
+        .text-center(class="infoPanel", ng-class="infoStatus")
+            p
+                span(ng-repeat="infoMessage in infoMessages")
+                    {{ infoMessage }}
+                    br
+        .controlgroup
+            label.control-label(for="firstName") Prénom :
+            .controls
+                input(type="text", id="firstName", ng-model="firstName", placeholder="Patrick")
+        .controlgroup
+            label.control-label(for="lastName") Nom :
+            .controls
+                input(type="text", id="lastName", ng-model="lastName", placeholder="Dupont")
+        .controlgroup
+            label.control-label(for="address") Adresse :
+            .controls
+                input(type="text", id="address", ng-model="address", placeholder="58, bd Montparnasse")
+        .controlgroup
+            .controls
+                input(type="submit", value="Envoyer !")

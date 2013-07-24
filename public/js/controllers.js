@@ -2,11 +2,125 @@
 
 /* Controllers */
 
-var geocoder = new google.maps.Geocoder ();
 
 angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
+    controller("MapController", function ($scope, $resource, socket) {
+        google.maps.visualRefresh = true;
+
+        socket.on ('doctor:add', function(doctor) {
+            $scope.addDoctor (doctor);
+        });
+
+        socket.on ('doctor:init', function(doctors) {
+            for (var i in doctors) {
+                var doctor = doctors[i];
+
+                $scope.addDoctor (doctor);
+            }
+        });
+
+        angular.extend ($scope, {
+            center: {
+                latitude: 48.856,
+                longitude: 2.341
+            },
+
+            zoom: 12,
+            markers: [],
+
+            addDoctor: function (doctor) {
+                console.log (doctor);
+                var info = '<strong>Dr ' + doctor.first_name + ' ' + doctor.last_name + '</strong><br />';
+                info += '<em>' + doctor.formatted + '</em><br />';
+                info += '<a href="remove-doctor/' + doctor._id + '" class="btn btn-danger btn-mini"><i class="icon-white icon-remove in-gmaps-icon" alt="Supprimer"></i></a>';
+                info += '<a href="edit-doctor/' + doctor._id + '" class="btn btn-info btn-mini"><i class="icon-white icon-pencil in-gmaps-icon" alt="Modifier"></i></a>';
+                $scope.markers.push ({
+                    id: doctor._id,
+                    latitude: doctor.coords.latitude,
+                    longitude: doctor.coords.longitude,
+                    infoWindow: info,
+                });
+            },
+
+            events: {
+            }
+        });
+    }).
+
+    controller("DoctorAdder", function ($scope, $resource, socket) {
+        var geocoder = new google.maps.Geocoder ();
+        var DoctorDb = $resource('/api/doctors/:id', {id: '@_id'});
+
+        angular.extend ($scope, {
+            firstName: "",
+            lastName: "",
+            address: "",
+
+            infoStatus: "hidden",
+            infoMessages: [],
+
+            submit: function () {
+                geocoder.geocode ({address: $scope.address, region: 'FR'}, function (results, status) {
+                    if (status != google.maps.GeocoderStatus.OK) {
+                        $scope.infoStatus = "error";
+                        $scope.infoMessages = ["Impossible de trouver l'adresse demandée(" + $scope.address + ").", "Êtes-vous sûr de l'avoir bien orthographiée ?"];
+                    }
+                    else {
+                        var res = results[0];
+
+                        $scope.infoStatus = "valid";
+                        $scope.infoMessages = ["Addresse trouvée : " + res.formatted_address + "."];
+
+                        var doctor = {
+                            'first_name': $scope.firstName,
+                            'last_name': $scope.lastName,
+                            'formatted': res.formatted_address,
+                            'coords': {
+                                'latitude': res.geometry.location.jb,
+                                'longitude': res.geometry.location.kb
+                            }
+                        };
+
+                        new DoctorDb(doctor).$save(function (res) {
+                            if (res) {
+                                $scope.infoMessages = ["Médecin ajouté !"];
+                                socket.emit('doctor:add', doctor);
+                            }
+                            else {
+                                $scope.infoStatus = "error";
+                                $scope.infoMessages = ["Problème lors de l'insertion en base de données. Peut-être que le médecin que vous essayez d'ajouter existe déjà ?"];
+                            }
+                        });
+                    }
+                    $scope.$apply();
+                });
+            }
+        });
+    }).
+
+    controller('DoctorRemover', function ($scope, $resource, $location) {
+        var DoctorDb = $resource('/api/doctors/:id', {id: '@_id'}, {
+            'get': {method: 'GET', isArray: true, params: {action: 'get'}}
+        });
+
+        angular.extend ($scope, {
+            cancel: function () {
+                $location.path ('/');
+            },
+
+            remove: function (id) {
+                DoctorDb.get ({_id: id}, function (doctor) {
+                    console.log (doctor);
+                });
+            }
+        });
+    }).
+
+
     controller('GMapsController', function ($scope, $timeout, $log, $resource) {
         google.maps.visualRefresh = true;
+        var geocoder = new google.maps.Geocoder ();
+
         var DoctorDb = $resource('/api/doctors/:id', {id: '@id'},{
             'get': {method: 'GET', isArray: true, params: {action: 'get'}}
         });
@@ -27,14 +141,22 @@ angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
             latitude: null,
             longitude: null,
 
+            search: null,
+            searchId: {selected: null},
+            searchDisabled: true,
+
+            validateModel: function () {
+                $scope.searchDisabled = ($scope.searchId === null);
+            },
+
             showValid: false,
             showInfo: false,
             showError: false,
 
             resetInfos: function () {
-              $scope.showValid = false;
-              $scope.showInfo = false;
-              $scope.showError = false;
+                $scope.showValid = false;
+                $scope.showInfo = false;
+                $scope.showError = false;
             },
 
             getFormattedInfo: function (firstName, lastName, address) {
@@ -50,7 +172,7 @@ angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
             },
 
             addMarkerOnCurrent: function () {
-              $scope.addMarker (parseFloat ($scope.latitude, $scope.longitude, $scope.infoWindow));
+              $scope.addMarker (parseFloat ($scope.latitude), parseFloat($scope.longitude), $scope.infoWindow);
             },
 
             moveOnLocation: function (lat, lng, info) {
@@ -118,7 +240,6 @@ angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
                         }).$save();
 
                         $scope.moveOnLocation ($scope.latitude, $scope.longitude, $scope.getFormattedInfo (firstName, lastName, address));
-                        $scope.addMarkerOnCurrent ();
                     }
                     $scope.$apply ();
                     console.log ($scope);
@@ -138,8 +259,11 @@ angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
         DoctorDb.get({}, function (doctors){
             for (var i in doctors) {
             var doctor = doctors[i];
-            console.log(i, doctor, doctors);
                 $scope.addMarker(doctor.coords.latitude, doctor.coords.longitude, $scope.getFormattedInfo (doctor.first_name, doctor.last_name, doctor.formatted));
             }
         });
+
+        $scope.$watch ('searchId', function() {
+            $scope.validateModel ();
+        })
      });

@@ -1,12 +1,28 @@
 !!!
 html(ng-app="shaolin")
-  head
-      meta(charset='utf8')
-      base(href='/')
-      title Doctolib - JavaScript Shaolin
-      link(rel='stylesheet', href='/css/bootstrap.min.css')
-      link(rel='stylesheet', href='/css/app.css')
-      block imports
-  body
-      #content
-          block body
+    head
+        meta(charset='utf8')
+        base(href='/')
+        title Doctolib - JavaScript Shaolin
+
+        block cssimports
+            link(rel='stylesheet', href='/css/bootstrap.min.css')
+            link(rel='stylesheet', href='/css/app.css')
+
+        block jsimports
+            script(src='js/lib/angular/angular.js')
+            script(src='js/lib/angular/angular-resource.js')
+            script(src='http://maps.googleapis.com/maps/api/js?sensor=false&language=fr')
+            script(src='js/lib/angular-google-maps/angular-google-maps.js')
+            script(src='js/app.js')
+            script(src='js/services.js')
+            script(src='js/controllers.js')
+            script(src='js/filters.js')
+            script(src='js/directives.js')
+            script(src='js/lib/jQuery/jquery-1.9.1.js')
+            script(src='js/lib/jQuery/jquery-ui-1.10.3.custom.min.js')
+            script(src='socket.io/socket.io.js')
+
+    body
+        #content
+            block body

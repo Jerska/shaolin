@@ -10,6 +10,8 @@ block imports
     script(src='js/controllers.js')
     script(src='js/filters.js')
     script(src='js/directives.js')
+    script(src='js/lib/jQuery/jquery-1.9.1.js')
+    script(src='js/lib/jQuery/jquery-ui-1.10.3.custom.min.js')
 
 block body
     div(ng-controller='GMapsController')
@@ -55,3 +57,9 @@ block body
                     events="events",
                     style="min-width: 100px; min-height: 400px; overflow:hidden; margin-left: 20px;"
                 )
+
+        .row
+            .span3
+                form(ng-submit="submit()")
+                    input(type="text", id="searchField", autocomplete, ng-model="search", blur="validateModel()", placeholder="Rechercher...")
+                    input(type="submit", ng-disable="searchDisabled")

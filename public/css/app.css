@@ -5,7 +5,46 @@
   margin: auto;
 }
 
-#map_canvas img{max-width:none}
+.google-map img{
+  max-width: none;
+}
+
+.infoPanel {
+    border-radius: 10px;
+    border: 3px solid;
+    padding: 10px 20px 0px;
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 12px;
+    color: #666;
+}
+
+.error {
+    border-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.info {
+    border-color: rgba(255, 255, 0, 0.5);
+    background-color: rgba(255, 255, 0, 0.2);
+}
+
+.valid {
+    border-color: rgba(0, 255, 0, 0.5);
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.hidden {
+  display: none;
+}
+
+.form-horizontal input {
+    margin-bottom: 10px;
+}
+
+.btn-mini [class^="icon-"], .btn-mini [class*=" icon-"] {
+    margin-top: 1px;
+}
 
 .menu {
   list-style: none;
