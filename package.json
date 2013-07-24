@@ -5,11 +5,13 @@
     "express": "3.3.x",
     "jade": "0.31.x",
     "googlemaps": "0.1.x",
-    "mongodb": "1.3.x"
-
+    "mongodb": "1.3.x",
+    "mongoose": "3.6.x",
+    "angular-bridge": "0.3.x"
   },
   "engines": {
     "node": "0.10.x",
     "npm": "1.3.x"
   }
 }
+

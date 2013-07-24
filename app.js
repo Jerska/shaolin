@@ -6,11 +6,11 @@
 var express = require('express'),
     routes = require('./routes'),
     api = require('./routes/api'),
+    db = require('./db'),
     http = require('http'),
     path = require('path');
 
 var app = module.exports = express();
-
 
 /**
  * Configuration
@@ -26,6 +26,13 @@ app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
+var angularBridge = new (require('angular-bridge'))(app, {
+    urlPrefix: '/api/'
+});
+app.use('/api', express.basicAuth('root', 'root'));
+angularBridge.addResource('doctors', db.Doctor);
+
+
 // development only
 if (app.get('env') === 'development') {
     app.use(express.errorHandler());
@@ -35,6 +42,7 @@ if (app.get('env') === 'development') {
 if (app.get('env') === 'production') {
     // TODO
 };
+
 
 
 /**

@@ -2,6 +2,7 @@ extends layout
 
 block imports
     script(src='js/lib/angular/angular.js')
+    script(src='js/lib/angular/angular-resource.js')
     script(src='http://maps.googleapis.com/maps/api/js?sensor=false&language=fr')
     script(src='js/lib/angular-google-maps/angular-google-maps.js')
     script(src='js/app.js')
@@ -27,9 +28,9 @@ block body
                     form.form-horizontal
                         h3.text-center Ajouter un médecin
                         .controlgroup
-                            label.control-label(for="name") Nom :
+                            label.control-label(for="lastname") Nom :
                             .controls
-                                input(type="text", id="name", ng-model="name", placeholder="Dupont")
+                                input(type="text", id="lastname", ng-model="lastname", placeholder="Dupont")
                         .controlgroup
                             label.control-label(for="firstname") Prénom :
                             .controls
@@ -40,7 +41,7 @@ block body
                                 input(type="text", id="address", ng-model="address", placeholder="58, bd Montparnasse")
                         .controlgroup
                             .controls
-                                input(type="submit", ng-click="markAddress(address, name, firstname)", value="Envoyer !")
+                                input(type="submit", ng-click="addDoctor(address, lastname, firstname)", value="Envoyer !")
 
             .span7
                 .google-map(center="center",

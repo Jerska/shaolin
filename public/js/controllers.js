@@ -4,9 +4,12 @@
 
 var geocoder = new google.maps.Geocoder ();
 
-angular.module('shaolin.controllers', ["google-maps"]).
-    controller('GMapsController', function ($scope, $timeout, $log) {
+angular.module('shaolin.controllers', ["google-maps", "ngResource"]).
+    controller('GMapsController', function ($scope, $timeout, $log, $resource) {
         google.maps.visualRefresh = true;
+        var DoctorDb = $resource('/api/doctors/:id', {id: '@id'},{
+            'get': {method: 'GET', isArray: true, params: {action: 'get'}}
+        });
 
         angular.extend($scope, {
             position: {
@@ -34,12 +37,20 @@ angular.module('shaolin.controllers', ["google-maps"]).
               $scope.showError = false;
             },
 
-            addMarker: function () {
+            getFormattedInfo: function (firstName, lastName, address) {
+                return "<strong>Dr " + firstName + " " + lastName + "</strong><br />" + "<em>" + address + "</em>";
+            },
+
+            addMarker: function (lat, lng, info) {
                 $scope.markers.push ({
-                    latitude: parseFloat ($scope.latitude),
-                    longitude: parseFloat ($scope.longitude),
-                    infoWindow: $scope.infoWindow
-                })
+                    latitude: lat,
+                    longitude: lng,
+                    infoWindow: info
+                });
+            },
+
+            addMarkerOnCurrent: function () {
+              $scope.addMarker (parseFloat ($scope.latitude, $scope.longitude, $scope.infoWindow));
             },
 
             moveOnLocation: function (lat, lng, info) {
@@ -55,7 +66,7 @@ angular.module('shaolin.controllers', ["google-maps"]).
                     $scope.longitude = lng;
                     $scope.infoWindow = info;
 
-                    $scope.addMarker ();
+                    $scope.addMarkerOnCurrent ();
                     $scope.$apply ();
             },
 
@@ -74,7 +85,7 @@ angular.module('shaolin.controllers', ["google-maps"]).
                 }
             },
 
-            markAddress: function (address, name, firstname) {
+            addDoctor: function (address, lastName, firstName) {
                 $scope.resetInfos();
                 $scope.showInfo = true;
                 $scope.info = "Looking for address " + address;
@@ -96,7 +107,18 @@ angular.module('shaolin.controllers', ["google-maps"]).
 
                         $scope.valid = "Addresse trouvée : " + res.formatted_address + ".";
 
-                        $scope.moveOnLocation ($scope.latitude, $scope.longitude, "<strong>Dr " + firstname + " " + name + "</strong><br />" + "<em>" + $scope.realAddress + "</em>");
+                        new DoctorDb({
+                            'first_name': firstName,
+                            'last_name': lastName,
+                            'formatted': res.formatted_address,
+                            'coords': {
+                                'latitude': res.geometry.location.jb,
+                                'longitude': res.geometry.location.kb
+                            }
+                        }).$save();
+
+                        $scope.moveOnLocation ($scope.latitude, $scope.longitude, $scope.getFormattedInfo (firstName, lastName, address));
+                        $scope.addMarkerOnCurrent ();
                     }
                     $scope.$apply ();
                     console.log ($scope);
@@ -108,8 +130,16 @@ angular.module('shaolin.controllers', ["google-maps"]).
                     $log.log ("User defined event on map directive with scope", this);
                     $log.log ("User defined event: " + eventName, mapModel, originalEventArgs);
                     $log.log ("Scope : ", $scope);
-                    //$scope.addMarker ();
+                    //$scope.addMarkerOnCurrent ();
                 }
+            }
+        });
+
+        DoctorDb.get({}, function (doctors){
+            for (var i in doctors) {
+            var doctor = doctors[i];
+            console.log(i, doctor, doctors);
+                $scope.addMarker(doctor.coords.latitude, doctor.coords.longitude, $scope.getFormattedInfo (doctor.first_name, doctor.last_name, doctor.formatted));
             }
         });
      });
