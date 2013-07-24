@@ -2,11 +2,11 @@
 
 // Declare app level module which depends on filters, and services
 
-angular.module('myApp', [
-  'myApp.controllers',
-  'myApp.filters',
-  'myApp.services',
-  'myApp.directives'
+angular.module('shaolin', [
+  'shaolin.controllers',
+  'shaolin.filters',
+  'shaolin.services',
+  'shaolin.directives'
 ]).
 config(function ($routeProvider, $locationProvider) {
   $routeProvider.

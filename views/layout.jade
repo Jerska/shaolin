@@ -1,9 +1,12 @@
 !!!
-html(ng-app="myApp")
+html(ng-app="shaolin")
   head
-    meta(charset='utf8')
-    base(href='/')
-    title Angular Express Seed App
-    link(rel='stylesheet', href='/css/app.css')
+      meta(charset='utf8')
+      base(href='/')
+      title Doctolib - JavaScript Shaolin
+      link(rel='stylesheet', href='/css/bootstrap.min.css')
+      link(rel='stylesheet', href='/css/app.css')
+      block imports
   body
-    block body
+      #content
+          block body
