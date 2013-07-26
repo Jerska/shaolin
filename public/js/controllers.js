@@ -109,8 +109,8 @@ angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
 
         socket.on ('doctor:remove', function(doctor) {
             for (var i in $scope.markers) {
-                if (marker[0].id == doctor.id)
-                    markers.splice (i, 1);
+                if ($scope.markers[i].id == doctor.id)
+                    $scope.markers.splice (i, 1);
             }
         });
 
@@ -124,7 +124,6 @@ angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
             markers: [],
 
             addDoctor: function (doctor) {
-                console.log (doctor);
                 var info = '<strong>Dr ' + doctor.first_name + ' ' + doctor.last_name + '</strong><br />';
                 info += '<em>' + doctor.formatted + '</em><br />';
                 info += '<a href="/remove-doctor/' + doctor._id + '" class="btn btn-danger btn-mini"><i class="icon-white icon-remove in-gmaps-icon" alt="Supprimer"></i></a>';
@@ -142,13 +141,6 @@ angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
         });
 
         socket.emit ('doctor:init');
-    }).
-
-    controller("IncludesUpdater", function ($scope, socket) {
-        console.log ("There is an IncludesUpdater hey !");
-        angular.extend ($scope, {
-        });
-
     }).
 
     controller("DoctorAdder", function ($scope, $sanitize, socket) {
