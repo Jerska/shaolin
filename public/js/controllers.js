@@ -49,7 +49,7 @@ function geocode (address, socket, callback) {
     });
 }
 
-angular.module('shaolin.controllers', ["google-maps", "ngSanitize", "ui.autocomplete"]).
+angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
     controller("StatusController", function ($scope, socket) {
         angular.extend ($scope, {
             infoStatus: "hidden",
