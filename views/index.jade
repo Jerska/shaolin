@@ -1,65 +1,9 @@
 extends layout
 
-block imports
-    script(src='js/lib/angular/angular.js')
-    script(src='js/lib/angular/angular-resource.js')
-    script(src='http://maps.googleapis.com/maps/api/js?sensor=false&language=fr')
-    script(src='js/lib/angular-google-maps/angular-google-maps.js')
-    script(src='js/app.js')
-    script(src='js/services.js')
-    script(src='js/controllers.js')
-    script(src='js/filters.js')
-    script(src='js/directives.js')
-    script(src='js/lib/jQuery/jquery-1.9.1.js')
-    script(src='js/lib/jQuery/jquery-ui-1.10.3.custom.min.js')
-
 block body
-    div(ng-controller='GMapsController')
-        .valid(ng-show="showValid") {{ valid }}
-        .info(ng-show="showInfo") {{ info }}
-        .error(ng-show="showError") {{ error }}
-
-        .row
-            .span5.text-center
-                .subcontainer
-                    a.btn(ng-click="findMe()")
-                        i.icon-screenshot
-                        span Trouvez moi
-
-                .subcontainer
-                    form.form-horizontal
-                        h3.text-center Ajouter un médecin
-                        .controlgroup
-                            label.control-label(for="lastname") Nom :
-                            .controls
-                                input(type="text", id="lastname", ng-model="lastname", placeholder="Dupont")
-                        .controlgroup
-                            label.control-label(for="firstname") Prénom :
-                            .controls
-                                input(type="text", id="firstname", ng-model="firstname", placeholder="Patrick")
-                        .controlgroup
-                            label.control-label(for="address") Adresse :
-                            .controls
-                                input(type="text", id="address", ng-model="address", placeholder="58, bd Montparnasse")
-                        .controlgroup
-                            .controls
-                                input(type="submit", ng-click="addDoctor(address, lastname, firstname)", value="Envoyer !")
-
-            .span7
-                .google-map(center="center",
-                    zoom="zoom",
-                    markers="markers",
-                    latitude="latitude",
-                    longitude="longitude",
-                    mark-click="false",
-                    draggable="true",
-                    fit="false",
-                    events="events",
-                    style="min-width: 100px; min-height: 400px; overflow:hidden; margin-left: 20px;"
-                )
-
-        .row
-            .span3
-                form(ng-submit="submit()")
-                    input(type="text", id="searchField", autocomplete, ng-model="search", blur="validateModel()", placeholder="Rechercher...")
-                    input(type="submit", ng-disable="searchDisabled")
+    .row
+        .span8
+            include partials/map
+        .span4
+            include partials/add-doctor
+            include partials/search

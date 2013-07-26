@@ -1,0 +1,15 @@
+div(ng-controller="Researcher", id="research")
+    form.form-horizontal
+        h3.text-center Rechercher
+        .controlgroup
+            label.control-label(for="search_input", style="margin-right: 20px;") Information :
+            input(type="text", ng-model="content",id="search-input", ui-autocomplete="autocompletion", placeholder="Nom, adresse, ...")
+        #search-results(ng-show="visible")
+            table.table.table-striped()
+                tr(ng-repeat="doctor in doctors")
+                    td
+                        strong {{ doctor.first_name }} {{ doctor.last_name }}
+                    td {{ doctor.formatted }}
+                tr
+                    td.text-center(colspan="2")
+                        a(ng-click="showAll()") Tout afficher

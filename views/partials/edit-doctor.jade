@@ -1,6 +1,7 @@
-div.text-center(ng-controller='DoctorAdder', style="width:100%")
-    form.form-horizontal(ng-submit="submit()", style="width: 400px; margin-auto;")
-        h3.text-center Ajouter un médecin
+a(href="/") Retour
+div(ng-controller='DoctorUpdater')
+    form.form-horizontal(ng-submit="submit()", ng-init="init('#{id}')")
+        h3.text-center Modifier un médecin
         .controlgroup
             label.control-label(for="firstName") Prénom :
             .controls

@@ -5,8 +5,16 @@
   margin: auto;
 }
 
-.google-map img{
+.google-map img {
   max-width: none;
+}
+
+.google-map {
+    margin-left: 20px;
+}
+
+#research {
+    width: 420px;
 }
 
 .infoPanel {

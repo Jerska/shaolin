@@ -2,6 +2,8 @@
 
 /* Services */
 
+$(".google-map").removeClass("ng-isolate-scope");
+
 angular.module('shaolin.services', []).
     value('version', '0.1').
     factory('socket', function ($rootScope) {

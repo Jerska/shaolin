@@ -1,4 +1,5 @@
-div(ng-controller='DoctorRemover')
+a(href="/") Retour
+div(ng-controller='DoctorRemover', ng-show="visible")
     p Êtes vous sûr de vouloir supprimer ce médecin ?
     button(ng-click="remove('#{id}')") Oui
     button(ng-click="cancel()") Non
