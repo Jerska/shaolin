@@ -43,6 +43,7 @@ function geocode (address, socket, callback) {
             }
             else {
                 statusUpdate (socket, 'valid', ["Addresse trouvée : " + address + "."]);
+                console.log ("Geocode res : ", good);
                 callback(good);
             }
         }
@@ -179,8 +180,8 @@ angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
                             'last_name': $scope.lastName,
                             'formatted': res.formatted_address,
                             'coords': {
-                                'latitude': res.geometry.location.jb,
-                                'longitude': res.geometry.location.kb
+                                'latitude': res.geometry.location.mb,
+                                'longitude': res.geometry.location.nb
                             }
                         };
                         socket.emit('doctor:add', doctor);
