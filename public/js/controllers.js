@@ -180,8 +180,8 @@ angular.module('shaolin.controllers', ["google-maps", "ngSanitize"]).
                             'last_name': $scope.lastName,
                             'formatted': res.formatted_address,
                             'coords': {
-                                'latitude': res.geometry.location.mb,
-                                'longitude': res.geometry.location.nb
+                                'latitude': res.geometry.location.lb,
+                                'longitude': res.geometry.location.mb
                             }
                         };
                         socket.emit('doctor:add', doctor);
